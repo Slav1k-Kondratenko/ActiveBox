@@ -119,6 +119,10 @@ triger.forEach(item => {
 });
 
 
+let testWidth = document.querySelector('.reviews__slider-wrapper');
+console.log(testWidth);
+
+
 // $(function () {
 
 //     // smooth scroll

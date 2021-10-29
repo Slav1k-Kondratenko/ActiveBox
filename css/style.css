@@ -414,7 +414,7 @@ p {
 }
 
 .reviews__slider-wrapper {
-    width: 1200px;
+    max-width: 100%;
 }
 
 .reviews__slider.slick-initialized {
