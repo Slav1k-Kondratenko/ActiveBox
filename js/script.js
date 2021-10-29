@@ -35,7 +35,7 @@ function slider({
         width = window.getComputedStyle(slidesWrapper).width;
     let slideIndex = 1,
         offset = 0;
-        
+
 
     slidesField.style.width = 100 * slides.length + '%';
     slidesField.style.display = 'flex';
@@ -83,7 +83,40 @@ function slider({
 }
 
 
+// navToggle
+const nav = document.querySelector('#nav'),
+    navToggle = document.querySelector('#navToggle');
 
+function showNav() {
+    nav.classList.toggle('show');
+    navToggle.classList.toggle('active');
+}
+
+navToggle.addEventListener('click', (e) => {
+    e.preventDefault();
+    showNav();
+});
+
+
+// smooth scroll
+const triger = document.querySelectorAll('.nav__link');
+
+triger.forEach(item => {
+    item.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        let elementId = item.getAttribute('data-scroll');
+        let elementOffset = document.querySelector(elementId).offsetTop;
+
+        nav.classList.remove('show');
+        navToggle.classList.remove('active');
+
+        window.scroll({
+            top: elementOffset - 60,
+            behavior: 'smooth'
+        });
+    });
+});
 
 
 // $(function () {
@@ -100,15 +133,6 @@ function slider({
 //         $("html, body").animate({
 //             scrollTop: elementOffset - 60
 //         }, 700);
-//     });
-
-
-//     // navToggle
-//     navToggle.on("click", function (event) {
-//         event.preventDefault();
-
-//         nav.toggleClass("show");
-//         navToggle.toggleClass("active");
 //     });
 
 // });
