@@ -1,126 +1,146 @@
-// fixed header
-const header = document.querySelector('#header'),
-    introH = document.querySelector('#intro').clientHeight;
+window.addEventListener('DOMContentLoaded', () => {
+    // fixed header
+    const header = document.querySelector('#header'),
+        introH = document.querySelector('#intro').clientHeight;
 
-function fixedHeader() {
-    if (window.pageYOffset > introH) {
-        header.classList.add('fixed');
-    } else {
-        header.classList.remove('fixed');
-    }
-}
-
-window.addEventListener('scroll', fixedHeader);
-
-
-// slider
-slider({
-    slidesSelector: '.reviews__item',
-    container: '.reviews__slider',
-    wrapper: '.reviews__slider-wrapper',
-    field: '.reviews__slider-inner'
-});
-
-function slider({
-    slidesSelector,
-    container,
-    wrapper,
-    field
-}) {
-
-    const slides = document.querySelectorAll(slidesSelector),
-        offerSlider = document.querySelector(container),
-        slidesWrapper = document.querySelector(wrapper),
-        slidesField = document.querySelector(field),
-        width = window.getComputedStyle(slidesWrapper).width;
-    let slideIndex = 1,
-        offset = 0;
-
-
-    slidesField.style.width = 100 * slides.length + '%';
-    slidesField.style.display = 'flex';
-    slidesField.style.transition = '.5s all';
-    slidesWrapper.style.overflow = 'hidden';
-    slides.forEach(slide => {
-        slide.style.width = width;
-    });
-    offerSlider.style.position = 'relative';
-
-    const dotsIndicators = document.createElement('ol'),
-        dots = [];
-
-    dotsIndicators.classList.add('carousel-indicators');
-    offerSlider.append(dotsIndicators);
-
-    for (let i = 0; i < slides.length; i++) {
-        const dot = document.createElement('li');
-        dot.classList.add('dot');
-        dot.setAttribute('data-slide-total', i + 1);
-        if (i == 0) {
-            dot.style.opacity = 1;
+    function fixedHeader() {
+        if (window.pageYOffset > introH) {
+            header.classList.add('fixed');
+        } else {
+            header.classList.remove('fixed');
         }
-        dotsIndicators.append(dot);
-        dots.push(dot);
     }
 
-    function changeOpacityDots() {
-        dots.forEach(dot => dot.style.opacity = '.5');
-        dots[slideIndex - 1].style.opacity = '1';
-    }
+    window.addEventListener('scroll', fixedHeader);
 
-    dots.forEach(dot => {
-        dot.addEventListener('click', (e) => {
-            const slideTo = e.target.getAttribute('data-slide-total');
 
-            slideIndex = slideTo;
-            offset = +width.slice(0, width.length - 2) * (slideTo - 1);
+    // slider
+    slider({
+        slidesSelector: '.reviews__item',
+        container: '.reviews__slider',
+        wrapper: '.reviews__slider-wrapper',
+        field: '.reviews__slider-inner'
+    });
 
+    function slider({
+        slidesSelector,
+        container,
+        wrapper,
+        field
+    }) {
+
+        const slides = document.querySelectorAll(slidesSelector),
+            offerSlider = document.querySelector(container),
+            slidesWrapper = document.querySelector(wrapper),
+            slidesField = document.querySelector(field);
+        let slideIndex = 1,
+            offset = 0,
+            width = window.getComputedStyle(slidesWrapper).width;
+
+        slidesField.style.width = 100 * slides.length + '%';
+        slidesField.style.display = 'flex';
+        slidesField.style.transition = '.5s all';
+        slidesWrapper.style.overflow = 'hidden';
+
+        function setWidth() {
+            slides.forEach(slide => {
+                slide.style.width = width;
+            });
+        }
+
+        setWidth();
+
+        window.addEventListener('resize', () => {
+            width = window.getComputedStyle(slidesWrapper).width;
+            setWidth();
+            offset = 0;
+            slideIndex = 1;
             slidesField.style.transform = `translateX(-${offset}px)`;
-
             changeOpacityDots();
         });
-    });
-}
 
+        offerSlider.style.position = 'relative';
 
-// navToggle
-const nav = document.querySelector('#nav'),
-    navToggle = document.querySelector('#navToggle');
+        const dotsIndicators = document.createElement('ol'),
+            dots = [];
 
-function showNav() {
-    nav.classList.toggle('show');
-    navToggle.classList.toggle('active');
-}
+        dotsIndicators.classList.add('carousel-indicators');
+        offerSlider.append(dotsIndicators);
 
-navToggle.addEventListener('click', (e) => {
-    e.preventDefault();
-    showNav();
-});
+        for (let i = 0; i < slides.length; i++) {
+            const dot = document.createElement('li');
+            dot.classList.add('dot');
+            dot.setAttribute('data-slide-total', i + 1);
+            if (i == 0) {
+                dot.style.opacity = 1;
+            }
+            dotsIndicators.append(dot);
+            dots.push(dot);
+        }
 
+        function changeOpacityDots() {
+            dots.forEach(dot => dot.style.opacity = '.5');
+            dots[slideIndex - 1].style.opacity = '1';
+        }
 
-// smooth scroll
-const triger = document.querySelectorAll('.nav__link');
+        dots.forEach(dot => {
+            dot.addEventListener('click', (e) => {
+                const slideTo = e.target.getAttribute('data-slide-total');
 
-triger.forEach(item => {
-    item.addEventListener('click', (e) => {
-        e.preventDefault();
+                slideIndex = slideTo;
+                offset = +width.slice(0, width.length - 2) * (slideTo - 1);
 
-        let elementId = item.getAttribute('data-scroll');
-        let elementOffset = document.querySelector(elementId).offsetTop;
+                slidesField.style.transform = `translateX(-${offset}px)`;
 
-        nav.classList.remove('show');
-        navToggle.classList.remove('active');
-
-        window.scroll({
-            top: elementOffset - 60,
-            behavior: 'smooth'
+                changeOpacityDots();
+            });
         });
+    }
+
+
+    // navToggle
+    const nav = document.querySelector('#nav'),
+        navToggle = document.querySelector('#navToggle');
+
+    function showNav() {
+        nav.classList.toggle('show');
+        navToggle.classList.toggle('active');
+    }
+
+    navToggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        showNav();
     });
+
+
+    // smooth scroll
+    function smoothScroll(trigerSelector, anchorSelector) {
+        const triger = document.querySelectorAll(trigerSelector);
+
+        triger.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+
+                let elementId = item.getAttribute(anchorSelector);
+                let elementOffset = document.querySelector(elementId).offsetTop;
+
+                nav.classList.remove('show');
+                navToggle.classList.remove('active');
+
+                window.scroll({
+                    top: elementOffset - 60,
+                    behavior: 'smooth'
+                });
+            });
+        });
+    }
+
+    smoothScroll('.nav__link', 'data-scroll');
 });
 
 
-let testWidth = document.querySelector('.reviews__slider-wrapper');
-console.log(testWidth);
+
+
 
 
 // $(function () {
